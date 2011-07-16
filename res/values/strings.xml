@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, BlekingskaSangbokActivity!</string>
     <string name="app_name">BlekingskaSangbok</string>
+    <string name="start">Hello World, Start!</string>
+    <string name="search">Hello World, Sök!</string>
+    <string name="list">Hello World, List!</string>
+    <string name="about">Hello World, Om!</string>
 </resources>
