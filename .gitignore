@@ -1,0 +1,12 @@
+# Eclipse-files
+.classpath
+.project
+
+# Temporary editor-files
+*~
+*.swp
+
+# Folders that shouldent go with
+bin/**/*
+bin/*
+bin/
