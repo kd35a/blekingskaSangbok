@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">BlekingskaSangbok</string>
-	<string name="start">Hello World, Start!</string>
-	<string name="search">Hello World, Sök!</string>
-	<string name="list">Hello World, List!</string>
+	<string name="app_name">Blekingska Nationens Sångbok</string>
 	<string name="about">Blekingska Nationens Sångbok - v. 0.0\n\n
 		Copyright 2011 Fredrik Strandin. All rights reserved.\n</string>
 	<string name="license1">Redistribution and use in source and binary forms, with or without modification, are

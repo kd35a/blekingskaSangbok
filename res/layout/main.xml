@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="5dp"
-        android:background="#296964">
+        android:background="#008000">
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"

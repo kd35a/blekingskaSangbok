@@ -7,8 +7,7 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".BlekingskaSangbokActivity"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
+                  android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -17,8 +16,9 @@
         
         <activity android:name=".StartActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".ListActivity" />
+        <activity android:name=".ListSongsActivity" />
         <activity android:name=".AboutActivity" />
+        <activity android:name=".ViewSongActivity" />
 
     </application>
 </manifest>

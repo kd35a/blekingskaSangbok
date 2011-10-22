@@ -8,12 +8,22 @@ public class Song implements Serializable {
 	private String melody;
 	private String credits;
 	private String text;
+	private long id;
 	
 	public Song(String title, String melody, String creadits, String text) {
 		this.title = title;
 		this.melody = melody;
 		this.credits = creadits;
 		this.text = text;
+		this.id = -1;
+	}
+	
+	public Song(String title, String melody, String creadits, String text, long id) {
+		this.title = title;
+		this.melody = melody;
+		this.credits = creadits;
+		this.text = text;
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -30,6 +40,10 @@ public class Song implements Serializable {
 
 	public String getText() {
 		return text;
+	}
+
+	public long getId() {
+		return id;
 	}
 	
 }

@@ -17,17 +17,7 @@ public class BlekingskaSangbokActivity extends TabActivity {
 		TabHost.TabSpec spec;
 		Intent intent;
 		
-		intent = new Intent().setClass(this, StartActivity.class);
-		spec = tabHost.newTabSpec("start").setIndicator("Start")
-						.setContent(intent);
-		tabHost.addTab(spec);
-		
-		intent = new Intent().setClass(this, SearchActivity.class);
-		spec = tabHost.newTabSpec("search").setIndicator("Sök")
-						.setContent(intent);
-		tabHost.addTab(spec);
-		
-		intent = new Intent().setClass(this, ListActivity.class);
+		intent = new Intent().setClass(this, ListSongsActivity.class);
 		spec = tabHost.newTabSpec("list").setIndicator("Lista")
 						.setContent(intent);
 		tabHost.addTab(spec);

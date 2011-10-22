@@ -1,6 +1,6 @@
 package se.kd35a.blekingskaSangbok;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "BlekingskaSangBok";
 	private static final String TABLE_NAME = "songs";
+	static final String ID = "_id";
 	static final String TITLE = "title";
 	static final String MELODY = "melody";
 	static final String CREDITS = "credits";
@@ -31,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		 * Credits
 		 * Song-text
 		 */
-		db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+		db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 				TITLE + " TEXT," +
 				MELODY + " TEXT," +
 				CREDITS + " TEXT," +
@@ -98,11 +99,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.insert(TABLE_NAME, TITLE, cv);
 	}
 	
-	public LinkedList<Song> getSongs() {
+	public ArrayList<Song> getSongs() {
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor c = db.query(TABLE_NAME, null, null, null, null, null, TITLE);
 		
-		LinkedList<Song> songs = new LinkedList<Song>();
+		ArrayList<Song> songs = new ArrayList<Song>();
 		
 		if (c.getCount() < 1) {
 			c.close();
@@ -114,12 +115,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			songs.add(new Song(c.getString(c.getColumnIndex(TITLE)),
 					c.getString(c.getColumnIndex(MELODY)),
 					c.getString(c.getColumnIndex(CREDITS)),
-					c.getString(c.getColumnIndex(TEXT))));
+					c.getString(c.getColumnIndex(TEXT)),
+					c.getLong(c.getColumnIndex(ID))));
 		} while (c.moveToNext());
 		
 		c.close();
 		db.close();
 		return songs;
+	}
+	
+	public Song getSong(long id) {
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor c = db.query(TABLE_NAME, null, ID + "==" + id, null, null, null, TITLE);
+		
+		if (c.getCount() != 1) {
+			throw new IllegalArgumentException("id " + id + "is not a valid id, does not exist in database.");
+		}
+		
+		c.moveToFirst();
+		Song song = new Song(c.getString(c.getColumnIndex(TITLE)),
+				c.getString(c.getColumnIndex(MELODY)),
+				c.getString(c.getColumnIndex(CREDITS)),
+				c.getString(c.getColumnIndex(TEXT)),
+				id);
+		
+		c.close();
+		db.close();
+		return song;
 	}
 
 }
