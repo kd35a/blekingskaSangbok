@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="512px" height="512px">
+	<defs>
+		<linearGradient id="gradient" x1="0%" y1="10%" x2="0%" y2="100%">
+			<stop offset="0%"   stop-color="#00D000" stop-opacity="1"/>
+			<stop offset="100%" stop-color="#008000" stop-opacity="1"/>
+		</linearGradient>
+	</defs>
+	<rect x="58" y="58" ry="65" rx="65" height="396" width="396" style="fill:url(#gradient)"/>
+	<!-- <rect x="16" y="16" ry="20" rx="20" height="382" width="382" style="fill:url(#gradient)"/> -->
+
+	<polygon points="69,199 183,199 183,313 69,313" style="fill:#000000;" />
+	<polygon points="199,199 313,256 199,313" style="fill:#000000;" />
+	<polygon points="329,199 374,199 374,313 329,313" style="fill:#000000;" />
+	<polygon points="398,199 443,199 443,313 398,313" style="fill:#000000;" />
+
+</svg>
