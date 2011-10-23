@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		
 	}
 
 	@Override
@@ -53,8 +54,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/** Method for parsing JSON **/
-	public void getJSONSongs(String json) {
-		boolean DEBUG = true; 
+	private void getJSONSongs(String json) {
+		boolean DEBUG = false;; 
 		
 		try {
 			String x = "";
@@ -69,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					x += "Credits: " + post.getString("credits") + "\n";
 					x += "Lyric: " + post.getString("lyric") + "\n\n";					
 				}else {
-					// TODO: Check if title exist, else add to local database, 
+					addToDB(post.getString("title"), post.getString("melody"), post.getString("credits"),  post.getString("lyric"));
 				}
 			}
 			Log.w("Found JSON: ", x);
@@ -78,8 +79,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			Log.w("JSON", "ERROR: " + je.getMessage());
 		}
 	}
-
-	public String retrieve_url(String url) {
+	/** Fills database with content from JSON lyric file. 
+	 * Empties database first.**/
+	public void populateDatabase(){
+		SQLiteDatabase db = getWritableDatabase();
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		onCreate(db);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		onCreate(db);
+		getJSONSongs(retrieve_url("http://kryptoanarki.se/temp/lyric.json"));
+	}
+	/**
+	 * Returns content of URL and returns it as String
+	 * @param url
+	 * @return
+	 */
+	private String retrieve_url(String url) {
 
 		HttpGet getRequest = new HttpGet(url);
 
@@ -108,9 +123,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return null;
 
 	}
-
+	/** Adds song to Database 
+	 * Note that new databse object is reacreated each time. Room for optimization **/
+	private void addToDB(String title, String melody, String credits, String text) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TITLE, title);
+		cv.put(MELODY, melody);
+		cv.put(CREDITS, credits);
+		cv.put(TEXT, text);
+		db.insert(TABLE_NAME, TITLE, cv);
+	}
 	public void addDefaultSongs() {
-		getJSONSongs(retrieve_url("http://kryptoanarki.se/temp/lyric.json"));
+		
 		SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);

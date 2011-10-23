@@ -17,7 +17,8 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		super.onCreate(savedInstanceState);
 		
 		DatabaseHelper dbHelper = new DatabaseHelper(this);
-		dbHelper.addDefaultSongs();
+		//dbHelper.addDefaultSongs();
+		dbHelper.populateDatabase();
 		songs = dbHelper.getSongs();
 		setListAdapter(new SongArrayAdapter(this, songs));
 
@@ -26,7 +27,7 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		lv.setOnItemClickListener(this);
 	}
 
-	@Override
+
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Intent intent = new Intent(this, ViewSongActivity.class);
 		intent.putExtra("song", songs.get(position).getId());
