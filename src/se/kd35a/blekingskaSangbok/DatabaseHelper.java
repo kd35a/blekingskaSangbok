@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	/** Method for parsing JSON **/
 	private void getJSONSongs(String json) {
-		boolean DEBUG = false;; 
+		boolean DEBUG = false; 
 		
 		try {
 			String x = "";
@@ -83,8 +83,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * Empties database first.**/
 	public void populateDatabase(){
 		SQLiteDatabase db = getWritableDatabase();
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-		onCreate(db);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);
 		getJSONSongs(retrieve_url("http://kryptoanarki.se/temp/lyric.json"));
