@@ -2,6 +2,9 @@ package se.kd35a.blekingskaSangbok;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -46,8 +49,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS constants");
 		onCreate(db);
 	}
-	
+	/** Method for parsing JSON **/ 
+	public void getJSONSongs() {
+        try
+        {
+        	String example = "[{\"title\":\"Troy\",\"lyric\":\"Mott\"},{\"title\":\"Troy2\",\"lyric\":\"Mott2\"}]";
+            String x = "";
+            /* Example get from stream or resourse 
+            InputStream is = this.getResources().openRawResource(R.raw.jsonfile);
+            byte [] buffer = new byte[is.available()];
+            while (is.read(buffer) != -1);
+            String jsontext = new String(buffer);
+            */ 
+            JSONArray entries = new JSONArray(example);
+
+            x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
+            for (int i=0;i<entries.length();i++)
+            {
+                JSONObject post = entries.getJSONObject(i);
+                x += "------------\n";
+                x += "Title: " + post.getString("title") + "\n";
+                x += "Lyric: " + post.getString("lyric") + "\n\n";
+            }
+            Log.w("Found JSON: ", x);
+
+            
+        }
+        catch (Exception je)
+        {
+        	Log.w("JSON", "ERROR: " + je.getMessage());
+            // THROW THIS ERROR ("Error w/file: " + je.getMessage());
+        }
+	}
 	public void addDefaultSongs() {
+		getJSONSongs();
 		SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);
