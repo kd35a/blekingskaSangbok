@@ -33,7 +33,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		
 	}
 
 	@Override
@@ -53,9 +52,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	/** Method for parsing JSON **/
+	/**
+	 * Method for parsing JSON.
+	 * @param json the JSON-content to be parsed
+	 */
 	private void getJSONSongs(String json) {
-		boolean DEBUG = false; 
+		boolean DEBUG = false;
 		
 		try {
 			String x = "";
@@ -63,66 +65,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
 			for (int i = 0; i < entries.length(); i++) {
 				JSONObject post = entries.getJSONObject(i);
-				if(DEBUG) {
+				if (DEBUG) {
 					x += "------------\n";
 					x += "Title: " + post.getString("title") + "\n";
 					x += "Melody: " + post.getString("melody") + "\n";
 					x += "Credits: " + post.getString("credits") + "\n";
-					x += "Lyric: " + post.getString("lyric") + "\n\n";					
-				}else {
-					addToDB(post.getString("title"), post.getString("melody"), post.getString("credits"),  post.getString("lyric"));
+					x += "Lyric: " + post.getString("lyric") + "\n\n";
+				} else {
+					addToDB(post.getString("title"), post.getString("melody"),
+							post.getString("credits"),  post.getString("lyric"));
 				}
 			}
 			Log.w("Found JSON: ", x);
-
 		} catch (Exception je) {
 			Log.w("JSON", "ERROR: " + je.getMessage());
 		}
 	}
-	/** Fills database with content from JSON lyric file. 
-	 * Empties database first.**/
-	public void populateDatabase(){
+	
+	/**
+	 * Fills database with content from JSON lyric file. 
+	 * Empties database first.
+	 */
+	public void populateDatabase() {
 		SQLiteDatabase db = getWritableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);
-		getJSONSongs(retrieve_url("http://kryptoanarki.se/temp/lyric.json"));
+		addToDatabaseFromUrl("http://kryptoanarki.se/temp/lyric.json");
 	}
+	
 	/**
 	 * Returns content of URL and returns it as String
-	 * @param url
-	 * @return
+	 * @param url the url to the content
+	 * @return the content found on the url
 	 */
 	private String retrieve_url(String url) {
-
 		HttpGet getRequest = new HttpGet(url);
 
 		try {
-			DefaultHttpClient client = new DefaultHttpClient();   
+			DefaultHttpClient client = new DefaultHttpClient();
 			HttpResponse getResponse = client.execute(getRequest);
 			final int statusCode = getResponse.getStatusLine().getStatusCode();
-
+			
 			if (statusCode != HttpStatus.SC_OK) {
 				Log.w(getClass().getSimpleName(), "Error " + statusCode
 						+ " for URL " + url);
 				return null;
 			}
-
+			
 			HttpEntity getResponseEntity = getResponse.getEntity();
 			
 			if (getResponseEntity != null) {
 				return EntityUtils.toString(getResponseEntity,  HTTP.UTF_8);
 			}
-
 		} catch (IOException e) {
 			getRequest.abort();
 			Log.w(getClass().getSimpleName(), "Error for URL " + url, e);
 		}
-
+		
 		return null;
-
 	}
-	/** Adds song to Database 
-	 * Note that new databse object is reacreated each time. Room for optimization **/
+	
+	/**
+	 * Parses the json-file linked with the <code>url</code>, and adds the songs
+	 * in the file to the database.
+	 * @param url the url to the json-file to be parsed.
+	 */
+	public void addToDatabaseFromUrl(String url) {
+		getJSONSongs(retrieve_url(url));
+	}
+	
+	/**
+	 * Adds song to Database 
+	 * Note that new database object is recreated each time. Room for optimization
+	 */
 	private void addToDB(String title, String melody, String credits, String text) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
