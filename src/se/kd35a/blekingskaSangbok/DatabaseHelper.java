@@ -60,32 +60,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * Method for parsing JSON. Adds results do database.
 	 * @param json the JSON-content to be parsed
+	 * @param db SQLiteDatabase to be used (if set to null a new one will be generated)
 	 */
 	private void getJSONSongs(String json, SQLiteDatabase db) {
-		boolean DEBUG = false;
-		
 		try {
 			String x = "";
 			JSONArray entries = new JSONArray(json);
 			x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
 			for (int i = 0; i < entries.length(); i++) {
 				JSONObject post = entries.getJSONObject(i);
-				if (DEBUG) {
-					x += "------------\n";
-					x += "Title: " + post.getString("title") + "\n";
-					x += "Melody: " + post.getString("melody") + "\n";
-					x += "Credits: " + post.getString("credits") + "\n";
-					x += "Lyric: " + post.getString("lyric") + "\n\n";
-				} else {
-					if(db != null){
-						
-						addToDB(db, post.getString("title"), post.getString("melody"),
-								post.getString("credits"),  post.getString("lyric"));
-					}else {
-						addToDB( post.getString("title"), post.getString("melody"),
-								post.getString("credits"),  post.getString("lyric"));
-					}
-
+				if(db != null){
+					addToDB(db, post.getString("title"), post.getString("melody"),
+							post.getString("credits"),  post.getString("lyric"));
+				}else {
+					addToDB( post.getString("title"), post.getString("melody"),
+						post.getString("credits"), post.getString("lyric"));
 				}
 			}
 		} catch (Exception je) {
@@ -146,10 +135,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * Parses the json-file linked with the <code>url</code>, and adds the songs
 	 * in the file to the database.
 	 * @param url the url to the json-file to be parsed.
+	 * @param db SQLiteDatabase that is used. 
 	 */
 	public void addToDatabaseFromUrl(String url, SQLiteDatabase db) {
 		getJSONSongs(retrieveFromURL(url), db);
 	}
+	
 	/**
 	 * Populates database with songs found in /res/raw/lyric.json.
 	 * 
@@ -159,9 +150,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	/**
-	 * Adds song to Database 
-	 * Note that new database object is recreated each time. Room for optimization
-	 * @param db1 
+	 * Creates new row in DB. 
+	 * @param db SQLiteDatabase to use
+	 * @param title
+	 * @param melody
+	 * @param credits
+	 * @param text
 	 */
 	private void addToDB(SQLiteDatabase db, String title, String melody, String credits, String text) {
 		ContentValues cv = new ContentValues();
@@ -171,6 +165,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put(TEXT, text);
 		db.insert(TABLE_NAME, TITLE, cv);
 	}
+	
+	/**
+	 * Adds song to Database. 
+	 * Creates new db connection
+	 */
 	private void addToDB(String title, String melody, String credits, String text) {
 		SQLiteDatabase db = getWritableDatabase();
 		addToDB(db, title, melody, credits, text);
