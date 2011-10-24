@@ -1,6 +1,7 @@
 package se.kd35a.blekingskaSangbok;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -30,9 +31,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	static final String CREDITS = "credits";
 	static final String TEXT = "text";
 	private static final String tag = "DatabaseHelper";
-
+	private Context context; 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		this.context = context;
 	}
 
 	@Override
@@ -43,7 +45,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE + " TEXT,"
 				+ MELODY + " TEXT," + CREDITS + " TEXT," + TEXT + " TEXT);");
+		addToDatabaseFromFile(db);
 	}
+
+	
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -53,10 +58,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Method for parsing JSON.
+	 * Method for parsing JSON. Adds results do database.
 	 * @param json the JSON-content to be parsed
 	 */
-	private void getJSONSongs(String json) {
+	private void getJSONSongs(String json, SQLiteDatabase db) {
 		boolean DEBUG = false;
 		
 		try {
@@ -72,33 +77,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					x += "Credits: " + post.getString("credits") + "\n";
 					x += "Lyric: " + post.getString("lyric") + "\n\n";
 				} else {
-					addToDB(post.getString("title"), post.getString("melody"),
-							post.getString("credits"),  post.getString("lyric"));
+					if(db != null){
+						
+						addToDB(db, post.getString("title"), post.getString("melody"),
+								post.getString("credits"),  post.getString("lyric"));
+					}else {
+						addToDB( post.getString("title"), post.getString("melody"),
+								post.getString("credits"),  post.getString("lyric"));
+					}
+
 				}
 			}
-			Log.w("Found JSON: ", x);
 		} catch (Exception je) {
 			Log.w("JSON", "ERROR: " + je.getMessage());
 		}
 	}
+
+
 	
 	/**
-	 * Fills database with content from JSON lyric file. 
-	 * Empties database first.
+	 * Returns content of file as String
+	 * @return String json
 	 */
-	public void populateDatabase() {
-		SQLiteDatabase db = getWritableDatabase();
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-		onCreate(db);
-		addToDatabaseFromUrl("http://kryptoanarki.se/temp/lyric.json");
+	private String retrieveFromFile() {
+		try {
+			InputStream is =  this.context.getResources().openRawResource(R.raw.lyric);
+			byte[] buffer = new byte[is.available()];
+			while (is.read(buffer) != -1);
+			return new String(buffer);
+		} catch (Exception e) {
+			Log.e("se.kd35a.blekingskaSangbok.databasehelper", e.getMessage());
+		}
+		return null; 
 	}
-	
 	/**
 	 * Returns content of URL and returns it as String
 	 * @param url the url to the content
 	 * @return the content found on the url
 	 */
-	private String retrieve_url(String url) {
+	private String retrieveFromURL(String url) {
 		HttpGet getRequest = new HttpGet(url);
 
 		try {
@@ -130,16 +147,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * in the file to the database.
 	 * @param url the url to the json-file to be parsed.
 	 */
-	public void addToDatabaseFromUrl(String url) {
-		getJSONSongs(retrieve_url(url));
+	public void addToDatabaseFromUrl(String url, SQLiteDatabase db) {
+		getJSONSongs(retrieveFromURL(url), db);
+	}
+	/**
+	 * Populates database with songs found in /res/raw/lyric.json.
+	 * 
+	 */
+	public void addToDatabaseFromFile(SQLiteDatabase db) {
+		getJSONSongs(retrieveFromFile(), db);
 	}
 	
 	/**
 	 * Adds song to Database 
 	 * Note that new database object is recreated each time. Room for optimization
+	 * @param db1 
 	 */
-	private void addToDB(String title, String melody, String credits, String text) {
-		SQLiteDatabase db = getWritableDatabase();
+	private void addToDB(SQLiteDatabase db, String title, String melody, String credits, String text) {
 		ContentValues cv = new ContentValues();
 		cv.put(TITLE, title);
 		cv.put(MELODY, melody);
@@ -147,11 +171,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put(TEXT, text);
 		db.insert(TABLE_NAME, TITLE, cv);
 	}
+	private void addToDB(String title, String melody, String credits, String text) {
+		SQLiteDatabase db = getWritableDatabase();
+		addToDB(db, title, melody, credits, text);
+		db.close();
+	}
+	
+	/** Depricated **/
 	public void addDefaultSongs() {
 		
 		SQLiteDatabase db = getWritableDatabase();
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-		onCreate(db);
 
 		ContentValues cv = new ContentValues();
 

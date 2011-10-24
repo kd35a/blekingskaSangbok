@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -17,11 +18,8 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		super.onCreate(savedInstanceState);
 		
 		DatabaseHelper dbHelper = new DatabaseHelper(this);
-		//dbHelper.addDefaultSongs();
-		dbHelper.populateDatabase();
 		songs = dbHelper.getSongs();
 		setListAdapter(new SongArrayAdapter(this, songs));
-
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setOnItemClickListener(this);
