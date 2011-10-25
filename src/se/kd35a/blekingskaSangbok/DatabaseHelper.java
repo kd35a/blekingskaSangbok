@@ -113,8 +113,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			final int statusCode = getResponse.getStatusLine().getStatusCode();
 			
 			if (statusCode != HttpStatus.SC_OK) {
-				Log.w(getClass().getSimpleName(), "Error " + statusCode
-						+ " for URL " + url);
+				Log.w(tag, "Error: " + statusCode
+						+ ", for URL: " + url);
 				return null;
 			}
 			
@@ -125,9 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		} catch (IOException e) {
 			getRequest.abort();
-			Log.w(getClass().getSimpleName(), "Error for URL " + url, e);
+			Log.w(tag, "Error for URL: " + url, e);
 		}
-		
 		return null;
 	}
 	
@@ -164,7 +163,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put(CREDITS, credits);
 		cv.put(TEXT, text);
 		db.insert(TABLE_NAME, TITLE, cv);
-		Log.v(tag, "Added lots of stuff");
 	}
 	
 	/**

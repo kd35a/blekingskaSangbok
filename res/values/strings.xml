@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">Blekingska Nationens Sångbok</string>
-	<string name="about">Blekingska Nationens Sångbok - v. 0.0\n\n
+	<string name="about">Blekingska Nationens Sångbok - v. 0.0.1\n\n
 		Copyright 2011 Fredrik Strandin. All rights reserved.\n</string>
 	<string name="license1">Redistribution and use in source and binary forms, with or without modification, are
 	permitted provided that the following conditions are met:</string>

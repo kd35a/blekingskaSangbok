@@ -2,7 +2,6 @@ package se.kd35a.blekingskaSangbok;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 public class ViewSongActivity extends Activity {
@@ -20,8 +19,6 @@ public class ViewSongActivity extends Activity {
 		long songId = getIntent().getExtras().getLong("song");
 		DatabaseHelper dbHelper = new DatabaseHelper(this);
 		Song s = dbHelper.getSong(songId);
-		Log.i("ViewSongActivity", s.toString());
-		Log.i("ViewSongActivity", s.getTitle());
 		title.setText(s.getTitle());
 		
 		StringBuilder sb = new StringBuilder();
