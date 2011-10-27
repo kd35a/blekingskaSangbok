@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "BlekingskaSangBok";
 	private static final String TABLE_NAME = "songs";
 	static final String ID = "_id";
@@ -31,7 +31,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	static final String MELODY = "melody";
 	static final String CREDITS = "credits";
 	static final String TEXT = "text";
-	private static final String tag = "DatabaseHelper";
+	
+	static final String CREATE_TABLE_V1 = "CREATE TABLE " + TABLE_NAME + " (" + ID
+	+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE + " TEXT,"
+	+ MELODY + " TEXT," + CREDITS + " TEXT," + TEXT + " TEXT);";
+	
+	static final String CREATE_TABLE_V2 = "CREATE TABLE " + TABLE_NAME + " (" + ID
+	+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE + " TEXT UNIQUE,"
+	+ MELODY + " TEXT," + CREDITS + " TEXT," + TEXT + " TEXT);";
+	
+	private static final String TAG = "DatabaseHelper";
 	private Context context;
 	
 	public DatabaseHelper(Context context) {
@@ -42,21 +51,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		/**
-		 * Song-title Melody Credits Song-text
+		 * Song-title - is unique, trying to add a second song with the same
+		 * title will result in an error from the database.
+		 * Melody
+		 * Credits
+		 * Song-text
 		 */
-		db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE + " TEXT,"
-				+ MELODY + " TEXT," + CREDITS + " TEXT," + TEXT + " TEXT);");
+		db.execSQL(CREATE_TABLE_V2);
 		addToDatabaseFromFile(db);
 	}
 	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w(tag, "Upgrading database, which will destroy all old data");
-		db.execSQL("DROP TABLE IF EXISTS constants");
-		onCreate(db);
+		Log.w(TAG, "Upgrading database from version " + oldVersion +
+				" to version " + newVersion);
+		
+		if (oldVersion == 1) {
+			upgradeToVersion2(db);
+		}
 	}
 	
+	/**
+	 * Upgrades the database to version 2.
+	 * @param db the database to upgrade
+	 */
+	private void upgradeToVersion2(SQLiteDatabase db) {
+		Cursor c = db.query(TABLE_NAME, null, null, null, null, null, ID);
+
+		ArrayList<Song> songs = new ArrayList<Song>();
+
+		if (c.getCount() > 0) {
+			c.moveToFirst();
+			do {
+				songs.add(new Song(c.getString(c.getColumnIndex(TITLE)), c
+						.getString(c.getColumnIndex(MELODY)), c.getString(c
+						.getColumnIndex(CREDITS)), c.getString(c
+						.getColumnIndex(TEXT)), c.getLong(c.getColumnIndex(ID))));
+			} while (c.moveToNext());
+		}
+		
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		db.execSQL(CREATE_TABLE_V2);
+		
+		for (Song s : songs) {
+			addToDB(db, s.getTitle(), s.getMelody(), s.getCredits(), s.getText());
+		}
+	}
+
 	/**
 	 * Method for parsing JSON. Adds results do database.
 	 * @param json the JSON-content to be parsed
@@ -77,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				}
 			}
 		} catch (JSONException e) {
-			Log.e(tag + ".JSON", "ERROR: " + e.getMessage());
+			Log.e(TAG + ".JSON", "ERROR: " + e.getMessage());
 		}
 	}
 
@@ -94,7 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			while (is.read(buffer) != -1);
 			return new String(buffer);
 		} catch (Exception e) {
-			Log.e(tag, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return null;
 	}
@@ -113,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			final int statusCode = getResponse.getStatusLine().getStatusCode();
 			
 			if (statusCode != HttpStatus.SC_OK) {
-				Log.w(tag, "Error: " + statusCode
+				Log.w(TAG, "Error: " + statusCode
 						+ ", for URL: " + url);
 				return null;
 			}
@@ -125,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		} catch (IOException e) {
 			getRequest.abort();
-			Log.w(tag, "Error for URL: " + url, e);
+			Log.w(TAG, "Error for URL: " + url, e);
 		}
 		return null;
 	}
