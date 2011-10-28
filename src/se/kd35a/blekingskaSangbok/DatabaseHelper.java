@@ -324,5 +324,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.close();
 		return song;
 	}
+	
+	/**
+	 * Delete the song with the id <code>id</code> in the database.
+	 * @param id the id of the song to be deleted
+	 */
+	public void deleteSong(long id) {
+		SQLiteDatabase db = getWritableDatabase();
+		db.delete(TABLE_NAME, ID + "=?", new String[] {String.valueOf(id)});
+	}
 
 }

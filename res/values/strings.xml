@@ -27,4 +27,10 @@
 	<string name="add_url_message">Ange URLen till låtarna du vill lägga till.</string>
 	<string name="ok">OK</string>
 	<string name="cancel">Avbryt</string>
+	<string name="yes">Ja</string>
+	<string name="no">Nej</string>
+	<string name="delete_warning">Är du säker på att du vill radera denna sång?</string>
+	<string-array name="context_menu_options">
+		<item>Radera</item>
+	</string-array>
 </resources>

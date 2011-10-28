@@ -7,10 +7,12 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -28,6 +30,7 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setOnItemClickListener(this);
+		registerForContextMenu(lv);
 	}
 
 
@@ -53,8 +56,50 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		}
     	return super.onOptionsItemSelected(item);
     }
-
-
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == getListView().getId()) {
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+			Song song = songs.get(info.position);
+			menu.setHeaderTitle(song.getTitle());
+			String[] menuItems = getResources().getStringArray(R.array.context_menu_options);
+			for (int i = 0; i < menuItems.length; i++) {
+				menu.add(Menu.NONE, i, i, menuItems[i]);
+			}
+		}
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// If Delete song was chosen
+		if (item.getItemId() == 0) {
+			final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setCancelable(false);
+			builder.setMessage(getString(R.string.delete_warning));
+			builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					DatabaseHelper dbHelper = new DatabaseHelper(ListSongsActivity.this);
+					dbHelper.deleteSong(songs.get(info.position).getId());
+					refreshSongList();
+					getListView().postInvalidate();
+				}
+			});
+			builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			builder.create().show();
+			return true;
+		}
+		return false;
+	}
+	
 	private void addFromUrl() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		
@@ -65,15 +110,14 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		final EditText input = new EditText(this);
 		alert.setView(input);
 		
-		final ListSongsActivity parrent = this;
-		
 		alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String url = input.getText().toString();
-				DatabaseHelper dbHelper = new DatabaseHelper(parrent);
+				DatabaseHelper dbHelper = new DatabaseHelper(ListSongsActivity.this);
 				dbHelper.addToDatabaseFromUrl(url, null);
-				parrent.setListAdapter(new SongArrayAdapter(parrent, dbHelper.getSongs()));
-				parrent.getWindow().getDecorView().getRootView().postInvalidate();
+				
+				ListSongsActivity.this.refreshSongList();
+				ListSongsActivity.this.getListView().postInvalidate();
 			}
 		});
 		
@@ -84,6 +128,13 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		});
 		
 		alert.show();
+	}
+
+
+	protected void refreshSongList() {
+		DatabaseHelper dbHelper = new DatabaseHelper(this);
+		songs = dbHelper.getSongs();
+		setListAdapter(new SongArrayAdapter(this, songs));
 	}
 
 }
