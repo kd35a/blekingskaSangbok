@@ -7,5 +7,9 @@
               android:title="@string/add_url"
               android:checked="true"
               android:icon="@drawable/ic_menu_add" />
+        <item android:id="@+id/delete_all"
+              android:title="@string/delete_all"
+              android:checked="true"
+              android:icon="@drawable/ic_menu_delete" />
     </group>
 </menu>

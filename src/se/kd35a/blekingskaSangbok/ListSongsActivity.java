@@ -53,10 +53,34 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		case R.id.add_url:
 			addFromUrl();
 			return true;
+		case R.id.delete_all:
+			deleteAll();
+			return true;
 		}
     	return super.onOptionsItemSelected(item);
     }
 	
+	private void deleteAll() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setCancelable(false);
+		builder.setMessage(getString(R.string.delete_all_warning));
+		builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				DatabaseHelper dbHelper = new DatabaseHelper(ListSongsActivity.this);
+				dbHelper.deleteAllSong();
+				refreshSongList();
+				getListView().postInvalidate();
+			}
+		});
+		builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		builder.create().show();
+	}
+
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

@@ -178,7 +178,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @param db SQLiteDatabase that is used.
 	 */
 	public void addToDatabaseFromUrl(String url, SQLiteDatabase db) {
-		getJSONSongs(retrieveFromURL(url), db);
+		String json = retrieveFromURL(url);
+		if (json == null) {
+			Log.w(TAG, "Error, didn't get any json-data from " + url);
+			return;
+		}
+		getJSONSongs(json, db);
 	}
 	
 	/**
@@ -332,6 +337,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void deleteSong(long id) {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TABLE_NAME, ID + "=?", new String[] {String.valueOf(id)});
+	}
+	
+	/**
+	 * Deletes all songs from the database.
+	 */
+	public void deleteAllSong() {
+		SQLiteDatabase db = getWritableDatabase();
+		db.delete(TABLE_NAME, null, null);
 	}
 
 }

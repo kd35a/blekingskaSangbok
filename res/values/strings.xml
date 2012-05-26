@@ -30,6 +30,8 @@
 	<string name="yes">Ja</string>
 	<string name="no">Nej</string>
 	<string name="delete_warning">Är du säker på att du vill radera denna sång?</string>
+	<string name="delete_all_warning">Är du säker på att du vill radera alla sånger?</string>
+	<string name="delete_all">Ta bort alla sånger</string>
 	<string-array name="context_menu_options">
 		<item>Radera</item>
 	</string-array>
