@@ -29,9 +29,13 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		
 		TextView info = (TextView)rowView.findViewById(R.id.list_info);
 		StringBuilder sb = new StringBuilder();
-		sb.append(songs.get(position).getCredits());
-		if (!songs.get(position).getMelody().equals(""))
-			sb.append(", ").append(songs.get(position).getMelody());
+		if (!songs.get(position).getCredits().trim().equals(""))
+			sb.append(songs.get(position).getCredits().trim());
+		if (!songs.get(position).getCredits().trim().equals("") &&
+				!songs.get(position).getMelody().trim().equals(""))
+			sb.append(", ");
+		if (!songs.get(position).getMelody().trim().equals(""))
+			sb.append(songs.get(position).getMelody().trim());
 		info.setText(sb.toString());
 		
 		return rowView;

@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					addToDB(db, post.getString("title"), post.getString("melody"),
 							post.getString("credits"),  post.getString("lyric"));
 				} else {
-					addToDB( post.getString("title"), post.getString("melody"),
+					addToDB(post.getString("title"), post.getString("melody"),
 						post.getString("credits"), post.getString("lyric"));
 				}
 			}

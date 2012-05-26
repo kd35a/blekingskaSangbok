@@ -7,6 +7,5 @@
 *.swp
 
 # Folders that shouldent go with
-bin/**/*
-bin/*
 bin/
+gen/

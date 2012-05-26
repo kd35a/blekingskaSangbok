@@ -22,9 +22,13 @@ public class ViewSongActivity extends Activity {
 		title.setText(s.getTitle());
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(s.getCredits());
-		if (!s.getMelody().equals(""))
-			sb.append(", ").append(s.getMelody());
+		if (!s.getCredits().trim().equals(""))
+			sb.append(s.getCredits());
+		if (!s.getCredits().trim().equals("") &&
+				!s.getMelody().trim().equals(""))
+			sb.append(", ");
+		if (!s.getMelody().trim().equals(""))
+			sb.append(s.getMelody());
 		info.setText(sb.toString());
 		
 		text.setText(s.getText());

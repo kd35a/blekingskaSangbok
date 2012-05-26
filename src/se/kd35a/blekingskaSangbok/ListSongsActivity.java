@@ -80,7 +80,6 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 			builder.setCancelable(false);
 			builder.setMessage(getString(R.string.delete_warning));
 			builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					DatabaseHelper dbHelper = new DatabaseHelper(ListSongsActivity.this);
 					dbHelper.deleteSong(songs.get(info.position).getId());
@@ -89,7 +88,6 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 				}
 			});
 			builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					dialog.cancel();
 				}

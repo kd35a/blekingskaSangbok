@@ -23,12 +23,18 @@
 		android:layout_width="fill_parent"
 		android:layout_height="5dip"
 		android:background="@drawable/line" />
-	<TextView
-		android:id="@+id/song_text"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="5dp"
-		android:textColor="#FFFFFF"
-		android:textSize="16sp"
-		lineSpacingMultiplier="2" />
+	<ScrollView android:id="@+id/song_scrolltext"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:scrollbars="vertical"
+			android:fillViewport="true" >
+	    <TextView
+			android:id="@+id/song_text"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_margin="5dp"
+			android:textColor="#FFFFFF"
+			android:textSize="16sp"
+			lineSpacingMultiplier="2" />
+	</ScrollView>
 </LinearLayout>
