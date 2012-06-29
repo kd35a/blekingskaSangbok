@@ -32,8 +32,7 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		lv.setOnItemClickListener(this);
 		registerForContextMenu(lv);
 	}
-
-
+	
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Intent intent = new Intent(this, ViewSongActivity.class);
 		intent.putExtra("song", songs.get(position).getId());
@@ -79,8 +78,7 @@ public class ListSongsActivity extends ListActivity implements OnItemClickListen
 		});
 		builder.create().show();
 	}
-
-
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

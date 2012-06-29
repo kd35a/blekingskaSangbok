@@ -1,6 +1,7 @@
 # Eclipse-files
 .classpath
 .project
+.settings
 
 # Temporary editor-files
 *~
