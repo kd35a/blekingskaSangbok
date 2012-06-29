@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="se.kd35a.blekingskaSangbok"
-      android:versionCode="1"
-      android:versionName="0.0.1">
+      android:versionCode="2"
+      android:versionName="0.0.2">
     <uses-sdk android:minSdkVersion="4" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application android:icon="@drawable/icon" android:label="@string/app_name">
@@ -14,8 +14,6 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".StartActivity" />
-        <activity android:name=".SearchActivity" />
         <activity android:name=".ListSongsActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".ViewSongActivity" />
